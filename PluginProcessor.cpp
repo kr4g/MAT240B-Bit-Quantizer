@@ -90,7 +90,6 @@ NewProjectAudioProcessor::NewProjectAudioProcessor()
     rateRedux->name = "Rate";
     addParameter(rateRedux);
     
-
     bitRedux = new BitCrush_Parameter();
     bitRedux->defaultValue = 32;
     bitRedux->currentValue = 32;
@@ -216,8 +215,6 @@ void NewProjectAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
     for (int i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-   
-    
     int numSamples = buffer.getNumSamples();
    
     float noiseAmt = -120 + 120*(noiseAmount->getValue()/100); // dB
@@ -228,20 +225,15 @@ void NewProjectAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
     noiseAmt = jlimit<float>(-120, 0, noiseAmt);
     noiseAmt = Decibels::decibelsToGain(noiseAmt);
     
-    
-    
     // SAFETY CHECK :::: since some hosts will change buffer sizes without calling prepToPlay (Bitwig)
-    if (noiseBuffer.getNumSamples() != numSamples)
-    {
+    if (noiseBuffer.getNumSamples() != numSamples) {
         noiseBuffer.setSize(2, numSamples, false, true, true); // clears
         currentOutputBuffer.setSize(2, numSamples, false, true, true); // clears
     }
     
-    
     // COPY for processing ...
     currentOutputBuffer.copyFrom(0, 0, buffer.getReadPointer(0), numSamples);
     if (buffer.getNumChannels() > 1) currentOutputBuffer.copyFrom(1, 0, buffer.getReadPointer(1), numSamples);
-    
 
     // ----------------------------------------------------------
     // NOISE ----------------------------------------------------
@@ -250,7 +242,7 @@ void NewProjectAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
     {
         noiseBuffer.clear();
         
-        Array<float> noise = getWhiteNoise(numSamples);
+        Array<float> noise = getWhiteNoise(numSamples);  // TAKE OUT OF CALLBACK (e.g. prepToPlay)
         
         // range bound
         noiseAmt = jlimit<float>(0, 1, noiseAmt);
@@ -274,19 +266,22 @@ void NewProjectAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
         
         for (int i=0; i < numSamples; i++) {
             // BIT DEPTH
-            float totalQLevels = powf(2, bitDepth);
-            float val = data[i];
-            float remainder = fmodf(val, 1/totalQLevels);
-            
-            // Quantize ...
-            data[i] = val - remainder;
+            float totalQLevels = powf(2, bitDepth - 1);
+            // float val = data[i];
+            // float remainder = fmodf(val, 1/totalQLevels);
+            // // Quantize ...
+            // data[i] = val - remainder;
             // if sample is too close to zero, add noise
             // if (fabsf(data[i]) < 1/totalQLevels) {
             //     data[i] += (rand() % 2) ? 1/totalQLevels : -1/totalQLevels;
             // }
+            // ALTERNATE
+            int j = (int) (data[i] * totalQLevels);
+            data[i] = (float) j / totalQLevels;
             
             if (rateDivide > 1) {
                 if (i%rateDivide != 0) data[i] = data[i - i%rateDivide];
+                // TODO: Bresenham's line algorithm
             }
         }
     }

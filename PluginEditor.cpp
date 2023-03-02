@@ -35,7 +35,10 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     addAndMakeVisible(&noise);
     
     bitRedux.setName("Bits");
-    bitRedux.setRange(1, 16);
+    bitRedux.setRange(1, 32);
+
+    bitRedux.setSkewFactorFromMidPoint(8);  // TODO: dont do it like this
+
     bitRedux.setValue(processor.getParameters()[0]->getValue());
     bitRedux.setSliderStyle(Slider::LinearVertical);
     bitRedux.setColour(Slider::textBoxTextColourId, Colours::white);
