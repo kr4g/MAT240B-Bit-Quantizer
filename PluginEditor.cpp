@@ -24,15 +24,15 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     getLookAndFeel().setColour(Slider::thumbColourId, Colours::white);
     
     
-    noise.setName("Noise Amount");
-    noise.setRange(0, 100); // %
-    noise.setValue(processor.getParameters()[0]->getValue());
-    noise.setSliderStyle(Slider::LinearVertical);
-    noise.setColour(Slider::textBoxTextColourId, Colours::white);
-    noise.setTextBoxStyle(Slider::TextBoxBelow, false, 200, 20);
-    noise.setValue(0);
-    noise.addListener(this);
-    addAndMakeVisible(&noise);
+    // noise.setName("Noise");
+    // noise.setRange(0, 100); // %
+    // noise.setValue(processor.getParameters()[0]->getValue());
+    // noise.setSliderStyle(Slider::LinearVertical);
+    // noise.setColour(Slider::textBoxTextColourId, Colours::white);
+    // noise.setTextBoxStyle(Slider::TextBoxBelow, false, 200, 20);
+    // noise.setValue(0);
+    // noise.addListener(this);
+    // addAndMakeVisible(&noise);
     
     bitRedux.setName("Bits");
     bitRedux.setRange(1, 32);
