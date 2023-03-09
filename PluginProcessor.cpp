@@ -20,24 +20,24 @@ enum class BitwiseOp {
     OR,
     XOR,
     NOT,
-    SHIFT_LEFT,
-    SHIFT_RIGHT,
-    ROTATE_LEFT,
-    ROTATE_RIGHT,
-    FLIP,
-    SWAP,
+    // SHIFT_LEFT,
+    // SHIFT_RIGHT,
+    // ROTATE_LEFT,
+    // ROTATE_RIGHT,
+    // FLIP,
+    // SWAP,
 };
 const std::map<BitwiseOp, std::string> bitwiseOpLabels = {
     {BitwiseOp::AND, "AND"},
     {BitwiseOp::OR, "OR"},
     {BitwiseOp::XOR, "XOR"},
     {BitwiseOp::NOT, "NOT"},
-    {BitwiseOp::SHIFT_LEFT, "SHIFT_LEFT"},
-    {BitwiseOp::SHIFT_RIGHT, "SHIFT_RIGHT"},
-    {BitwiseOp::ROTATE_LEFT, "ROTATE_LEFT"},
-    {BitwiseOp::ROTATE_RIGHT, "ROTATE_RIGHT"},
-    {BitwiseOp::FLIP, "FLIP"},
-    {BitwiseOp::SWAP, "SWAP"}
+    // {BitwiseOp::SHIFT_LEFT, "SHIFT_LEFT"},
+    // {BitwiseOp::SHIFT_RIGHT, "SHIFT_RIGHT"},
+    // {BitwiseOp::ROTATE_LEFT, "ROTATE_LEFT"},
+    // {BitwiseOp::ROTATE_RIGHT, "ROTATE_RIGHT"},
+    // {BitwiseOp::FLIP, "FLIP"},
+    // {BitwiseOp::SWAP, "SWAP"}
 };
 
 // Function pointer type for bitwise operations
@@ -425,7 +425,7 @@ void NewProjectAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
     
     std::srand(std::time(nullptr));
     // int32_t intOperand = std::rand() % 32;
-    BitwiseOp op = static_cast<BitwiseOp>(std::rand() % 10);
+    BitwiseOp op = static_cast<BitwiseOp>(BitwiseOp::XOR);
     // std::cout << "intOperand: " << intOperand << " op: " << bitwiseOpLabels.at(op) << std::endl;
 
     // RESAMPLE
@@ -439,24 +439,20 @@ void NewProjectAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
             float remainder = fmodf(val, 1/totalQLevels);
             // Quantize ...
             data[i - 1] = val - remainder;
-            // // if sample is too close to zero, add noise
-            // if (fabsf(data[i]) < 1/totalQLevels) {
-            //     data[i] += (rand() % 2) ? 1/totalQLevels : -1/totalQLevels;
-            // }
             // // ALTERNATE
             // int j = (int) (data[i] * totalQLevels);
             // data[i] = (float) j / totalQLevels;
-
-            // BITWISE OPERATION
-            int32_t intSample = floatTo24bit(data[i - 1]);
-            int32_t intOperand = floatTo24bit(data[i]);
-
-            data[i - 1] = intToFloat24bit(bitwise(intSample, intOperand, op));
             
             if (rateDivide > 1) {
                 if (i%rateDivide != 0) data[i] = data[i - i%rateDivide];
                 // TODO: Bresenham's line algorithm
             }
+
+            // BITWISE OPERATION
+            int32_t intSample = floatTo24bit(data[i - 1]);
+            int32_t intOperand = floatTo24bit(data[i]);
+            data[i - 1] = intToFloat24bit(bitwise(intSample, intOperand, op));
+            if (data[i] > 1.0f) data[i] -= 1.0f;
         }
     }
     // COPY to the actual output buffer :::
