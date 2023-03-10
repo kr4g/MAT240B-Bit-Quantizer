@@ -11,9 +11,6 @@
   ==============================================================================
 */
 
-#include "PluginProcessor.h"
-#include "PluginEditor.h"
-
 //==============================================================================
 NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioProcessor& p)
     : AudioProcessorEditor (&p), processor (p)
@@ -34,8 +31,8 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     // noise.addListener(this);
     // addAndMakeVisible(&noise);
     
-    bitRedux.setName("Bits");
-    bitRedux.setRange(1, 32);
+    bitRedux.setName("Bit Depth");
+    bitRedux.setRange(32, 1);
 
     bitRedux.setSkewFactorFromMidPoint(8);  // TODO: dont do it like this
 
@@ -47,7 +44,7 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     bitRedux.addListener(this);
     addAndMakeVisible(&bitRedux);
     
-    rateRedux.setName("Rate");
+    rateRedux.setName("Sample Rate");
     rateRedux.setRange(1, 50); // division rate (rate / x)
     rateRedux.setValue(processor.getParameters()[0]->getValue());
     rateRedux.setSliderStyle(Slider::LinearVertical);
@@ -70,11 +67,11 @@ NewProjectAudioProcessorEditor::~NewProjectAudioProcessorEditor()
 void NewProjectAudioProcessorEditor::sliderValueChanged (Slider* slider)
 {
     
-    if ( slider == &noise)
-    {
-        processor.getParameters()[0]->setValue(slider->getValue());
-    }
-    else if ( slider == &rateRedux)
+    // if ( slider == &noise)
+    // {
+    //     processor.getParameters()[0]->setValue(slider->getValue());
+    // }
+    if ( slider == &rateRedux)
     {
         processor.getParameters()[1]->setValue(slider->getValue());
         
@@ -95,7 +92,7 @@ void NewProjectAudioProcessorEditor::paint (Graphics& g) {
     g.setColour(Colours::beige);
     
     int labelW = 100;
-    g.drawText("Noise", noise.getX() + noise.getWidth()/2 - labelW/2, 10, labelW, 20, Justification::centred);
+    // g.drawText("Noise", noise.getX() + noise.getWidth()/2 - labelW/2, 10, labelW, 20, Justification::centred);
     g.drawText("Bit", bitRedux.getX() + bitRedux.getWidth()/2 - labelW/2, 10, labelW, 20, Justification::centred);
     g.drawText("Rate", rateRedux.getX() + rateRedux.getWidth()/2 - labelW/2, 10, labelW, 20, Justification::centred);
 }
@@ -105,7 +102,7 @@ void NewProjectAudioProcessorEditor::resized() {
     int w = 60;
     int y = 50;
     
-    noise.setBounds(getWidth()/4 - w/2, y, w, getHeight() - y - margin);
+    // noise.setBounds(getWidth()/4 - w/2, y, w, getHeight() - y - margin);
     bitRedux.setBounds(2*getWidth()/4 - w/2, y, w, getHeight() - y - margin);
     rateRedux.setBounds(3*getWidth()/4 - w/2, y, w, getHeight() - y - margin);   
 }

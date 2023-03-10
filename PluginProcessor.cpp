@@ -7,7 +7,7 @@
 
   ==============================================================================
 */
-#include "Bitwise.h"
+// #include "Bitwise.h"
 
 #include <iostream>
 #include <vector>
@@ -84,11 +84,11 @@ NewProjectAudioProcessor::NewProjectAudioProcessor()
                        )
 #endif
 {
-    noiseAmount = new BitCrush_Parameter();
-    noiseAmount->defaultValue = 0;
-    noiseAmount->currentValue = 0;
-    noiseAmount->name = "Noise";
-    addParameter(noiseAmount);
+    // noiseAmount = new BitCrush_Parameter();
+    // noiseAmount->defaultValue = 0;
+    // noiseAmount->currentValue = 0;
+    // noiseAmount->name = "Noise";
+    // addParameter(noiseAmount);
     
     rateRedux = new BitCrush_Parameter();
     rateRedux->defaultValue = 1;
@@ -223,19 +223,19 @@ void NewProjectAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
 
     int numSamples = buffer.getNumSamples();
    
-    float noiseAmt = -120 + 120*(noiseAmount->getValue()/100); // dB
+    // float noiseAmt = -120 + 120*(noiseAmount->getValue()/100); // dB
     float bitDepth = bitRedux->getValue();
     int rateDivide = rateRedux->getValue();
     
     // GET PARAMETERS :::::
-    noiseAmt = jlimit<float>(-120, 0, noiseAmt);
-    noiseAmt = Decibels::decibelsToGain(noiseAmt);
+    // noiseAmt = jlimit<float>(-120, 0, noiseAmt);
+    // noiseAmt = Decibels::decibelsToGain(noiseAmt);
     
     // SAFETY CHECK :::: since some hosts will change buffer sizes without calling prepToPlay (Bitwig)
-    if (noiseBuffer.getNumSamples() != numSamples) {
-        noiseBuffer.setSize(2, numSamples, false, true, true); // clears
-        currentOutputBuffer.setSize(2, numSamples, false, true, true); // clears
-    }
+    // if (noiseBuffer.getNumSamples() != numSamples) {
+    //     noiseBuffer.setSize(2, numSamples, false, true, true); // clears
+    //     currentOutputBuffer.setSize(2, numSamples, false, true, true); // clears
+    // }
     
     // COPY for processing ...
     currentOutputBuffer.copyFrom(0, 0, buffer.getReadPointer(0), numSamples);
@@ -245,24 +245,24 @@ void NewProjectAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
     // NOISE ----------------------------------------------------
     // ----------------------------------------------------------
     // TODO: instead of noise, do something more interesting...
-    {
-        noiseBuffer.clear();
+    // {
+    //     noiseBuffer.clear();
         
-        Array<float> noise = getWhiteNoise(numSamples);  // TAKE OUT OF CALLBACK (e.g. prepToPlay)
+    //     Array<float> noise = getWhiteNoise(numSamples);  // TAKE OUT OF CALLBACK (e.g. prepToPlay)
         
-        // range bound
-        noiseAmt = jlimit<float>(0, 1, noiseAmt);
+    //     // range bound
+    //     noiseAmt = jlimit<float>(0, 1, noiseAmt);
         
-        FloatVectorOperations::multiply(noise.getRawDataPointer(), noiseAmt, numSamples);
+    //     FloatVectorOperations::multiply(noise.getRawDataPointer(), noiseAmt, numSamples);
         
-        // ADD the noise ...
-        FloatVectorOperations::add(noiseBuffer.getWritePointer(0), noise.getRawDataPointer(), numSamples);
-        FloatVectorOperations::add(noiseBuffer.getWritePointer(1), noise.getRawDataPointer(), numSamples); // STEREO
-    }
+    //     // ADD the noise ...
+    //     FloatVectorOperations::add(noiseBuffer.getWritePointer(0), noise.getRawDataPointer(), numSamples);
+    //     FloatVectorOperations::add(noiseBuffer.getWritePointer(1), noise.getRawDataPointer(), numSamples); // STEREO
+    // }
     
-    // ADD NOISE to the incoming AUDIO ::::
-    currentOutputBuffer.addFrom(0, 0, noiseBuffer.getReadPointer(0), numSamples);
-    currentOutputBuffer.addFrom(1, 0, noiseBuffer.getReadPointer(1), numSamples);
+    // // ADD NOISE to the incoming AUDIO ::::
+    // currentOutputBuffer.addFrom(0, 0, noiseBuffer.getReadPointer(0), numSamples);
+    // currentOutputBuffer.addFrom(1, 0, noiseBuffer.getReadPointer(1), numSamples);
     // ----------------------------------------------------------
     // ----------------------------------------------------------
     
@@ -293,7 +293,8 @@ void NewProjectAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
             }
 
             // BITWISE OPERATION
-            data[i - 1] = bitwise(data[i - 1], data[i], op);
+            // data[i - 1] = bitwise(data[i - 1], data[i], op);
+            // alternative way to do it ...
             // int32_t intSample = floatTo24bit(data[i - 1]);
             // int32_t intOperand = floatTo24bit(data[i]);
             // data[i - 1] = intToFloat24bit(bitwise(intSample, intOperand, op));

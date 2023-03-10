@@ -31,7 +31,9 @@ public:
     void paint (Graphics&) override;
     void resized() override;
 
-    Slider bitRedux, rateRedux, noise;
+    Slider bitRedux, rateRedux;//, noise;
+
+    
     // TextButton currentSampleDisplay;
     
 private:

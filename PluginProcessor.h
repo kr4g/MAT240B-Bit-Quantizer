@@ -60,10 +60,18 @@ class NewProjectAudioProcessor  : public AudioProcessor
     
     AudioSampleBuffer noiseBuffer, currentOutputBuffer;
     
-    BitCrush_Parameter* noiseAmount;
-    BitCrush_Parameter* rateRedux;
-    BitCrush_Parameter* bitRedux;
+    BitCrush_Parameter* mode;       // discrete or continuous quantization modes
+    BitCrush_Parameter* autoDrive;  // automatically increase drive as amp approaches 0 (on or off)
+    BitCrush_Parameter* drive;      // drive amount
+
+    BitCrush_Parameter* bitRedux;   // bit reduction amount 
+    BitCrush_Parameter* rateRedux;  // sample rate reduction amount (aka "downsampling")
     
+    BitCrush_Parameter* wet;
+    BitCrush_Parameter* dry;
+    
+    // BitCrush_Parameter* noiseAmount;
+
 public:
     //==============================================================================
     NewProjectAudioProcessor();
