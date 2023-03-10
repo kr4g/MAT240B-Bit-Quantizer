@@ -21,7 +21,7 @@
 //==============================================================================
 /**
 */
-class NewProjectAudioProcessorEditor  : public AudioProcessorEditor, public Slider::Listener
+class NewProjectAudioProcessorEditor  : public AudioProcessorEditor, public Slider::Listener//, public TextButton::Listener
 {
 public:
     NewProjectAudioProcessorEditor (NewProjectAudioProcessor&);
@@ -32,6 +32,7 @@ public:
     void resized() override;
 
     Slider bitRedux, rateRedux, noise;
+    // TextButton currentSampleDisplay;
     
 private:
     
